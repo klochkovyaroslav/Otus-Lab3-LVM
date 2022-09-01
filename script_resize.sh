@@ -25,4 +25,10 @@ yum install -y xfsdump
     #Должен быть SUCCESS
     #Проверяем что копирование прошло успешно
          ls -l /mnt/root_temp/
-        #Переконфигурируем grub для того, чтобы при старте перейти в новый / (root)
+    #Переконфигурируем grub для того, чтобы при старте перейти в новый / (root)
+    #Сымитируем текущий root -> сделаем в него chroot и обновим grub:
+         for i in /proc/ /sys/ /dev/ /run/ /boot/; do mount --bind $i /mnt/root_temp/$i; done
+    #Изменение корневого каталога диска
+         chroot /mnt/root_temp
+    #Сгенерировать конфигурацию GRUB2 в файл
+         grub2-mkconfig -o /boot/grub2/grub.cfg
