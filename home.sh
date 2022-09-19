@@ -7,7 +7,7 @@ sudo su
         #Создаемм VG
         vgcreate vg_home /dev/sdc
         #Создаемм LV
-        lvcreate -L 3G -n lv_home /dev/vg_home
+        lvcreate -l 50%FREE -n lv_home /dev/vg_home
         #Создаем ФС на новом томе и монтируем
         mkfs.xfs /dev/vg_home/lv_home
         mount /dev/vg_home/lv_home /mnt
@@ -23,18 +23,19 @@ sudo su
         touch /home/file{1..20}
         ls -l /home
         #Создаем LV для спапшота
-        lvcreate -L 100MB -s -n home_snap /dev/vg_home/lv_home
+        lvcreate -L 2G -s -n home_snap /dev/vg_home/lv_home
         lvs
         #Проверки использования места снапшотом
         dmsetup status
         #Удалить файлы
         rm -f /home/file{11..20}
     #Восстановиться из снапшота
-        #Отмантировать /home 
+        #Отмантировать /home
         umount /home
         #Сделанм слияние снапшота с исходным LV
         lvconvert --merge /dev/vg_home/lv_home
+        #Монтируем обратно /home
         mount /home
-        ls -l
+        ls -l /home
 
 
